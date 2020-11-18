@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
+  <div>
     <h1 class="title">Albums de Nom de l'artiste</h1>
-    <ul>
+    <ul class="albums">
       <li v-for="album in albums" :key="album.name">
         {{ album.image }}
         {{ album.name }}
@@ -17,39 +17,32 @@
 </template>
 
 <script>
+/* */
 export default {
   name: 'Artiste',
   data() {
     return {
-      album: {
+      /*     Album: {
         constructor(id, name, image) {
           this.id = id
           this.name = name
           this.image = image
         },
       },
-      albums: [],
+      Albums: [],
       track: {
         constructor(name, popularity) {
           this.name = name
           this.image = popularity
         },
       },
-      tracks: [],
+      tracks: [], */
     }
   },
 }
 </script>
 
 <style scoped>
-.container {
-  text-align: center;
-  justify-content: space-between;
-  align-items: flex-start;
-  display: flex;
-  flex-direction: column;
-  padding-left: 20%;
-}
 .title {
   font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -60,5 +53,11 @@ export default {
   text-align: center;
   color: white;
   margin-bottom: 100px;
+}
+.albums {
+  color: white;
+  text-align: center;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 </style>
