@@ -28,15 +28,7 @@ export default {
           this.name = name
           this.image = image
         },
-      },
-      Albums: [],
-      track: {
-        constructor(name, popularity) {
-          this.name = name
-          this.image = popularity
-        },
-      },
-      tracks: [], */
+      }, */
     }
   },
 }

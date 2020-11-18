@@ -17,7 +17,7 @@
     </section>
     <ul>
       <li v-for="artist in artists" :key="artist.name">
-        {{ artist.name }}
+        <nuxt-link>{{ artist.name }} </nuxt-link>
       </li>
     </ul>
     <a href="artiste/" target="_blank" class="button--green">Artiste</a>
@@ -25,45 +25,22 @@
 </template>
 
 <script>
-export default {
-  Artist: {
-    constructor(id, name, genre) {
-      this.id = id
-      this.name = name
-      this.genre = genre
-    },
-  },
-  Artists: {
-    constructor([artist]) {
-      this.artist = [artist]
-    },
+// Adresse à utiliser pour récupérer els éléments
+// const listAlbums = `https://api.spotify.com/v1/artists/{id}/albums`
+// const listTrack = `https://api.spotify.com/v1/albums/{id}/tracks`
 
-    data() {
-      return {
-        name: this.$route.params.name,
-        searchStr: null,
-        artists: [
-          {
-            id: 'test',
-            name: 'Patty Smith',
-            genre: 'rock',
-          },
-          {
-            id: 'test2',
-            name: 'Mozart',
-            genre: 'classique',
-          },
-          {
-            id: 'test3',
-            name: 'Louis Armstrong',
-            genre: 'jazz',
-          },
-        ],
-      }
-    },
-    methods: {
-      search() {
-        if (this.searchStr) {
+export default {
+  data() {
+    return {
+      name: this.$route.params.name,
+      searchStr: null,
+    }
+  },
+  methods: {
+    // Pour chercher un nom d'artiste en se connectant via l'API, token temporaire mis en dur mais à récupérer via app.js
+    search() {
+      if (this.searchStr) {
+        try {
           fetch(
             `https://api.spotify.com/v1/search?q=${this.searchStr}&type=artist`,
             {
@@ -81,31 +58,14 @@ export default {
               return res.json()
             })
             .then((res) => {
-              return (this.artists = res.item)
+              return (this.artists = res.items)
             })
-        } else {
-          console.log("Pas de nom d'artiste dans l'espace de recherche")
+        } catch {
+          console.log('Erreur: catch de la méthode serach()')
         }
-      },
-
-      getAlbums() {
-        fetch(`https://api.spotify.com/v1/artists/{id}/albums`, {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization:
-              'Bearer ' +
-              'BQBXdrpY_Eq-FJbwSFpgSVNcbntE54KXMuXHuHpBo0z_MYMcfaN6I4siI3pF81BEFCLxKl7kc8u07rVJ4mMMgQ72eX9O5M-QL7nl_aoxarQJH9-cKdMexUP8oj5W-ILsN9V6VTvQWDwsWZB-4Afhozl4-1Q3yihbYyA',
-          },
-        })
-          .then((res) => {
-            return res.json()
-          })
-          .then((res) => {
-            return (this.artists = res.item)
-          })
-      },
+      } else {
+        console.log("Pas de nom d'artiste dans l'espace de recherche")
+      }
     },
   },
 }
