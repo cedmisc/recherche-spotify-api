@@ -3,14 +3,16 @@
     <h1 class="title">Vous recherchez une musique?</h1>
     <section class="container">
       <p class="lead">
-        Entrez le nom d'un artiste pour découvrir sa musicographie:
+        Entrez le nom d'un artiste pour découvrir la liste de ses oeuvres:
       </p>
+      <a href="artiste/" target="_blank" class="button--green">Artiste</a>
       <div>
         <input
           v-model="searchStr"
           type="text"
           class="form"
           placeholder="Nom de l'artiste ou du groupe"
+          @keyup="callback()"
         />
       </div>
     </section>
@@ -24,10 +26,37 @@
 
 <script>
 export default {
+  artist: {
+    constructor(id, name, genre) {
+      this.id = id
+      this.name = name
+      this.genre = genre
+    },
+  },
+
+  getter: {},
+
   data() {
     return {
+      name: this.$route.params.name,
       searchStr: null,
-      artists: {},
+      artists: [
+        {
+          id: 'test',
+          name: 'Patty Smith',
+          genre: 'rock',
+        },
+        {
+          id: 'test2',
+          name: 'Mozart',
+          genre: 'classique',
+        },
+        {
+          id: 'test3',
+          name: 'Louis Armstrong',
+          genre: 'jazz',
+        },
+      ],
     }
   },
   methods: {
@@ -37,12 +66,9 @@ export default {
           return res.json()
         })
         .then((res) => {
-          return (this.artists = res.artists.items)
+          return (this.artists = res.items)
         })
     },
-  },
-  head() {
-    return { title: 'Mon application Spotify' }
   },
 }
 </script>
