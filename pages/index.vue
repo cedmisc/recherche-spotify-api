@@ -1,68 +1,97 @@
 <template>
-  <div>
-    <section class="container">
-      <h1 class="title">Vous recherchez une musique?</h1>
-      <p class="lead">
-        Entrez le nom d'un artiste pour découvrir la liste de ses oeuvres:
-      </p>
-      <div>
-        <input
-          v-model="searchStr"
-          type="text"
-          class="form"
-          placeholder="Nom de l'artiste ou du groupe"
-          @keyup="search()"
-        />
-      </div>
-    </section>
-    <ul>
-      <li v-for="artist in artists" :key="artist.name">
-        <nuxt-link>{{ artist.name }} </nuxt-link>
-      </li>
-    </ul>
-    <a href="artiste/" target="_blank" class="button--green">Artiste</a>
+  <div class="container">
+    <h1>Vous recherchez une musique?</h1>
+    <p class="lead">
+      Entrez le nom d'un artiste puis sélectionnez-le pour découvrir la liste de
+      ses oeuvres:
+    </p>
+    <div>
+      <input
+        v-model="searchStr"
+        type="text"
+        class="form"
+        placeholder="Nom de l'artiste ou du groupe"
+        @keyup="search()"
+      />
+    </div>
+    <div v-for="artist in artists" :key="artist.id" id="block">
+      <nuxt-link
+        :to="{
+          name: 'artist-id',
+          params: { id: artist.id, name: artist.name },
+        }"
+      >
+        <img v-if="artist.images[0]" :src="artist.images[0].url" />
+        <br />
+        <span>{{ artist.name }}</span>
+      </nuxt-link>
+    </div>
+    <h2>{{ token }}</h2>
   </div>
 </template>
 
 <script>
-// Adresse à utiliser pour récupérer els éléments
-// const listAlbums = `https://api.spotify.com/v1/artists/{id}/albums`
-// const listTrack = `https://api.spotify.com/v1/albums/{id}/tracks`
+const fetch = require('node-fetch')
 
 export default {
   data() {
     return {
-      name: this.$route.params.name,
-      searchStr: null,
+      searchStr: null, // caractères tapés dans la zone de recherche
+      artists: [], // résultat de la recherche d'artistes
+      token: null, // token d'autorisation récupéré via app.js
+      test: 'test pour nom artiste',
     }
   },
+
+  /*  mounted() {
+    this.token = fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        Authorization:
+          'Basic ' +
+          Buffer.from(
+            'fda8485a46ec429eb38ec3e3c97115ea' +
+              ':' +
+              '664c51f6e3dd4f09ab0cbabaf14915d0'
+          ).toString('base64'),
+      },
+      body: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        grant_type: 'client_credentials',
+      },
+    })
+      // .then((res) => res.json())
+      .then((json) => {
+        console.log(json)
+        return json
+      })
+  }, */
+
   methods: {
     // Pour chercher un nom d'artiste en se connectant via l'API, token temporaire mis en dur mais à récupérer via app.js
-    search() {
+    async search() {
       if (this.searchStr) {
-        try {
-          fetch(
-            `https://api.spotify.com/v1/search?q=${this.searchStr}&type=artist`,
-            {
-              method: 'GET',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                Authorization:
-                  'Bearer ' +
-                  'BQBXdrpY_Eq-FJbwSFpgSVNcbntE54KXMuXHuHpBo0z_MYMcfaN6I4siI3pF81BEFCLxKl7kc8u07rVJ4mMMgQ72eX9O5M-QL7nl_aoxarQJH9-cKdMexUP8oj5W-ILsN9V6VTvQWDwsWZB-4Afhozl4-1Q3yihbYyA',
-              },
-            }
+        await fetch(
+          `https://api.spotify.com/v1/search?q=${this.searchStr}&type=artist`,
+          {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              Authorization:
+                'Bearer BQCbkl2EJZ2Zr5kkbbbBaZ9xwaKV9HEJEavCOAig5IRaXz2QH9NBy-RDbpLvb9ayod0BvVUcp95KajfaJzM',
+            },
+          }
+        )
+          .then((response) => {
+            response.json().then((json) => {
+              this.artists = json.artists.items
+            })
+          })
+          .catch((error) =>
+            console.log('Erreur du fetch de recherche d artiste: ' + error)
           )
-            .then((res) => {
-              return res.json()
-            })
-            .then((res) => {
-              return (this.artists = res.items)
-            })
-        } catch {
-          console.log('Erreur: catch de la méthode serach()')
-        }
       } else {
         console.log("Pas de nom d'artiste dans l'espace de recherche")
       }
@@ -71,25 +100,16 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .container {
   text-align: center;
-  justify-content: space-between;
-  align-items: flex-start;
-  display: flex;
-  flex-direction: column;
-  padding-left: 20%;
+  margin-left: auto;
+  margin-right: auto;
 }
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: bold;
+h1 {
   font-size: 80px;
   letter-spacing: 1px;
-  text-align: center;
-  color: white;
-  margin-bottom: 100px;
+  margin-bottom: 90px;
 }
 .lead {
   color: darkgray;
@@ -97,10 +117,16 @@ export default {
   padding-bottom: 10px;
 }
 .form {
-  width: 800px;
+  width: 600px;
   min-height: 30px;
   background-color: white;
   border-radius: 10px;
+  margin-bottom: 20px;
   text-align: center;
+}
+img {
+  border-radius: 8px;
+  width: 100%;
+  height: 100%;
 }
 </style>

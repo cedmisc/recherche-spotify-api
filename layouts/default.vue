@@ -5,63 +5,28 @@
 </template>
 
 <style>
-* {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+html {
   background-color: black;
+  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: white;
+  text-align: center;
 }
-a.link {
-  padding: 18px 30px !important;
-  margin-right: 10px;
-  background: #333;
-  border-radius: 30px;
-  color: #fff;
-  cursor: pointer;
-  display: inline-block;
+h1 {
+  font-weight: bold;
 }
-a {
-  text-decoration: none !important;
+#block {
+  padding: 20px;
+  border: 1px solid white;
+  font-size: xx-large;
+  width: 25%;
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
 }
-span {
-  display: block;
-}
-.album {
-  margin-bottom: 30px;
-}
-.green {
-  background: #2ebd59 !important;
-}
-.green-color {
-  color: #2ebd59;
-}
-a.link:hover {
-  text-decoration: none;
-}
-.albums {
-  margin-top: 50px;
-}
-.album-image {
-  max-width: 100%;
-  border-radius: 0;
-}
-ul,
-li {
-  margin-left: 0;
-  list-style: none;
-  padding-left: 0;
-}
-li::after {
-  content: '';
-  display: block;
-  clear: both;
-}
-.navbar-brand a {
-  color: #2ebd59;
-}
-.navbar-brand a:hover,
-.navbar-brand a:active,
-.navbar-brand a:focus {
-  text-decoration: none;
+img {
+  border-radius: 8px;
+  width: 20%;
+  height: 20%;
 }
 </style>
