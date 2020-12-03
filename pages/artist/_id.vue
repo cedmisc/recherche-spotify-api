@@ -2,48 +2,60 @@
   <div class="container">
     <h1 id="artist_name">{{ this.name }}</h1>
     <p class="lead">Sélectionnez un album pour voir la liste de ses titres:</p>
-    <div v-for="album in albums" :key="album.name + album.id" id="block">
-      <nuxt-link :to="`/album/${album.id}`">
+    <div v-for="album in albums" id="block" :key="album.name + album.id">
+      <nuxt-link
+        :to="{
+          name: 'album-albumId',
+          params: {
+            albumId: album.id,
+            albumName: album.name,
+            token: token,
+          },
+        }"
+      >
         <img v-if="album.images[0]" :src="album.images[0].url" />
         <span>{{ album.name }}</span>
         <span>{{ album.id }}</span>
       </nuxt-link>
     </div>
-    <p>{{ errorMessage }}</p>
+    <p>{{ errorMessage }} {{ token }}</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Id',
   data() {
     return {
+      id: this.$route.params.id, // id de l'artiste
+      name: this.$route.params.name, // nom de l'artiste
+      token:
+        'BQDs6Jtl3bbVHV0uLHJDJFe_Ef98Pdhee0GAMPmAE0C_QpI2CvcrgH0Za3Fz_AafVYnRRZmcKvyqGsB7S_o', // token d'accès à la BDD Spotify
+      albums: [],
+      errorMessage: null,
       // paramètres de recherche pour les fetch
       param: {
         method: 'GET',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          Authorization:
-            'Bearer BQCbkl2EJZ2Zr5kkbbbBaZ9xwaKV9HEJEavCOAig5IRaXz2QH9NBy-RDbpLvb9ayod0BvVUcp95KajfaJzM',
         },
+        Authorization: 'Bearer ' + this.token,
       },
-      id: this.$route.params.id, // id de l'artiste
-      name: this.$route.params.name, // nom de l'artiste
-      albums: [],
-      errorMessage: null,
     }
   },
 
-  computed: {
+  /* computed: {
     // récupération de l'ID de l'artiste sélectionné
-    /* relatedId() {
+    relatedId() {
       return this.artists.find((artist) => artist.id === this.id)
     },
-     relatedName() {
+    relatedName() {
       return this.artists.find((artist) => artist.name === this.name)
-    }, */
-  },
+    },
+    relatedToken() {
+      return this.token.find((token) => token.value === this.value)
+    },
+  }, */
 
   mounted() {
     this.albumsList()
@@ -76,12 +88,6 @@ export default {
 
 <style scoped>
 .container {
-  color: white;
-}
-ul {
-  color: white;
-}
-li {
   color: white;
 }
 </style>

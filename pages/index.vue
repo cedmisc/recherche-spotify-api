@@ -14,7 +14,7 @@
         @keyup="search()"
       />
     </div>
-    <div v-for="artist in artists" :key="artist.id" id="block">
+    <div v-for="artist in artists" id="block" :key="artist.id">
       <nuxt-link
         :to="{
           name: 'artist-id',
@@ -26,7 +26,7 @@
         <span>{{ artist.name }}</span>
       </nuxt-link>
     </div>
-    <h2>{{ token }}</h2>
+    <h2>{{ this.token }}</h2>
   </div>
 </template>
 
@@ -38,35 +38,10 @@ export default {
     return {
       searchStr: null, // caractères tapés dans la zone de recherche
       artists: [], // résultat de la recherche d'artistes
-      token: null, // token d'autorisation récupéré via app.js
-      test: 'test pour nom artiste',
+      token:
+        'BQDs6Jtl3bbVHV0uLHJDJFe_Ef98Pdhee0GAMPmAE0C_QpI2CvcrgH0Za3Fz_AafVYnRRZmcKvyqGsB7S_o', // token d'autorisation récupéré via app.js
     }
   },
-
-  /*  mounted() {
-    this.token = fetch('https://accounts.spotify.com/api/token', {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        Authorization:
-          'Basic ' +
-          Buffer.from(
-            'fda8485a46ec429eb38ec3e3c97115ea' +
-              ':' +
-              '664c51f6e3dd4f09ab0cbabaf14915d0'
-          ).toString('base64'),
-      },
-      body: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        grant_type: 'client_credentials',
-      },
-    })
-      // .then((res) => res.json())
-      .then((json) => {
-        console.log(json)
-        return json
-      })
-  }, */
 
   methods: {
     // Pour chercher un nom d'artiste en se connectant via l'API, token temporaire mis en dur mais à récupérer via app.js
@@ -79,8 +54,7 @@ export default {
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
-              Authorization:
-                'Bearer BQCbkl2EJZ2Zr5kkbbbBaZ9xwaKV9HEJEavCOAig5IRaXz2QH9NBy-RDbpLvb9ayod0BvVUcp95KajfaJzM',
+              Authorization: 'Bearer ' + this.token,
             },
           }
         )
