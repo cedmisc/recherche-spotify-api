@@ -1,10 +1,21 @@
 <template>
   <div>
     <h1>{{ albumName }}</h1>
-    <table v-for="tracks in orderedTracks" :key="tracks.id">
+    <table>
       <tr>
+        <th>Numéro de piste</th>
+        <th>Titres</th>
+        <th>Popularité</th>
+      </tr>
+      <tr v-for="tracks in orderedTracks" :key="tracks.id">
+        <td>{{ tracks.track_number }}</td>
         <td>{{ tracks.name }}</td>
         <td>{{ tracks.popularity }}</td>
+      </tr>
+      <tr v-for="track in trackList" :key="track.id">
+        <td>{{ track.track_number }}</td>
+        <td>{{ track.name }}</td>
+        <td>{{ track.popularity }}</td>
       </tr>
     </table>
   </div>
@@ -18,7 +29,7 @@ export default {
       albumName: this.$route.params.albumName, // ID de l'album sélectionné
       albumId: this.$route.params.albumId, // Nom de cet album
       token:
-        'BQDs6Jtl3bbVHV0uLHJDJFe_Ef98Pdhee0GAMPmAE0C_QpI2CvcrgH0Za3Fz_AafVYnRRZmcKvyqGsB7S_o', // token d'accès à la BDD Spotify
+        'BQA0a4tn6UuuWYSlyVkgSFjpHUfcgTsn4L_N4_tMqE1X4rhmFX20fFIXH3nZHyfJkozuvo1UEUNVky7Es2I', // token d'accès à la BDD Spotify
       track: {},
       trackList: [],
       orderedTracks: [],
@@ -26,29 +37,26 @@ export default {
   },
 
   mounted() {
-    this.sortTrackList()
+    this.tracksList(this.albumId)
   },
 
   methods: {
-    async sortTrackList() {
-      console.log('Entrée dans sortTrakcsList ')
-      await this.tracksList(this.albumId)
-      await console.log(
-        'Entrée dans trackList: ' + this.albumId + ' ' + this.trackList
-      )
-    },
-
     // méthode de récupération des titres de chanson d'un album
     async tracksList(albumId) {
-      await fetch(
-        `https://api.spotify.com/v1/albums/${albumId}/tracks`,
-        this.param
-      )
+      await fetch(`https://api.spotify.com/v1/albums/${albumId}/tracks`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + this.token,
+        },
+      })
         .then((response) => {
           response.json().then((json) => {
             console.log('trackList json ' + json.items)
             this.trackList = json.items
             this.improveList(this.trackList)
+            console.log('trackList ' + this.trackList[0].id)
           })
         })
         .catch((error) =>
@@ -57,8 +65,8 @@ export default {
     },
 
     async improveList(list) {
-      for await (const tracks of list) {
-        await this.sortTrack(tracks.id)
+      for await (const element of list) {
+        await this.sortTrack(element.id)
         console.log('track : ' + this.track.name)
         console.log('OrderedTracks : ' + this.orderedTracks)
       }
@@ -67,26 +75,41 @@ export default {
       await console.log('arranged ' + this.orderedTracks)
     },
 
-    orderList(list) {
-      list.sort(function (a, b) {
-        return b.popularity - a.popularity
-      })
-    },
-
     // méthode de récupération d'une chanson
     async sortTrack(trackId) {
-      await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, this.param)
+      await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + this.token,
+        },
+      })
         .then((response) => {
           response.json().then((json) => {
             console.log('track json ' + json)
             this.track = json
+            this.orderedTracks.push(this.track)
           })
         })
         .catch((error) =>
           console.log('Erreur du fetch de la récupération d un titre: ' + error)
         )
-      this.orderedTracks.push(this.track)
+    },
+
+    // méthode de tri des chanson selon leur popularité
+    orderList(list) {
+      list.sort(function (a, b) {
+        return b.popularity - a.popularity
+      })
     },
   },
 }
 </script>
+
+<style scoped>
+table {
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>

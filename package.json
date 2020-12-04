@@ -16,17 +16,18 @@
     "*.{js,vue}": "eslint",
     "*.{css,vue}": "stylelint"
   },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
   "dependencies": {
-    "axios": "^0.21.0",
-    "body-parser": "^1.19.0",
-    "core-js": "2",
+    "core-js": "^3.6.5",
     "express": "^4.17.1",
-    "node-fetch": "^2.6.1",
-    "nuxt": "^2.14.6",
-    "qs": "^6.9.4"
+    "nuxt": "^2.14.6"
   },
   "devDependencies": {
-    "@babel/runtime-corejs2": "^7.12.5",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "@nuxtjs/eslint-config": "^3.1.0",

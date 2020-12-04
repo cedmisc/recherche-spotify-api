@@ -26,7 +26,7 @@
         <span>{{ artist.name }}</span>
       </nuxt-link>
     </div>
-    <h2>{{ this.token }}</h2>
+    <h2>{{ token }}</h2>
   </div>
 </template>
 
@@ -39,7 +39,7 @@ export default {
       searchStr: null, // caractères tapés dans la zone de recherche
       artists: [], // résultat de la recherche d'artistes
       token:
-        'BQDs6Jtl3bbVHV0uLHJDJFe_Ef98Pdhee0GAMPmAE0C_QpI2CvcrgH0Za3Fz_AafVYnRRZmcKvyqGsB7S_o', // token d'autorisation récupéré via app.js
+        'BQA0a4tn6UuuWYSlyVkgSFjpHUfcgTsn4L_N4_tMqE1X4rhmFX20fFIXH3nZHyfJkozuvo1UEUNVky7Es2I', // token d'autorisation récupéré via app.js
     }
   },
 

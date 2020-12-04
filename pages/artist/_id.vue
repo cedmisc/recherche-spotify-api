@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1 id="artist_name">{{ this.name }}</h1>
+    <h1 id="artist_name">{{ name }}</h1>
     <p class="lead">Sélectionnez un album pour voir la liste de ses titres:</p>
     <div v-for="album in albums" id="block" :key="album.name + album.id">
       <nuxt-link
@@ -9,7 +9,6 @@
           params: {
             albumId: album.id,
             albumName: album.name,
-            token: token,
           },
         }"
       >
@@ -29,22 +28,13 @@ export default {
       id: this.$route.params.id, // id de l'artiste
       name: this.$route.params.name, // nom de l'artiste
       token:
-        'BQDs6Jtl3bbVHV0uLHJDJFe_Ef98Pdhee0GAMPmAE0C_QpI2CvcrgH0Za3Fz_AafVYnRRZmcKvyqGsB7S_o', // token d'accès à la BDD Spotify
+        'BQA0a4tn6UuuWYSlyVkgSFjpHUfcgTsn4L_N4_tMqE1X4rhmFX20fFIXH3nZHyfJkozuvo1UEUNVky7Es2I', // token d'accès à la BDD Spotify
       albums: [],
       errorMessage: null,
-      // paramètres de recherche pour les fetch
-      param: {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        Authorization: 'Bearer ' + this.token,
-      },
     }
   },
 
-  /* computed: {
+  computed: {
     // récupération de l'ID de l'artiste sélectionné
     relatedId() {
       return this.artists.find((artist) => artist.id === this.id)
@@ -52,10 +42,7 @@ export default {
     relatedName() {
       return this.artists.find((artist) => artist.name === this.name)
     },
-    relatedToken() {
-      return this.token.find((token) => token.value === this.value)
-    },
-  }, */
+  },
 
   mounted() {
     this.albumsList()
@@ -65,10 +52,14 @@ export default {
     // méthode de récupération des albums de l'artiste sélectionné
     async albumsList() {
       if (this.id) {
-        await fetch(
-          `https://api.spotify.com/v1/artists/${this.id}/albums`,
-          this.param
-        )
+        await fetch(`https://api.spotify.com/v1/artists/${this.id}/albums`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + this.token,
+          },
+        })
           .then((response) => {
             response.json().then((json) => {
               this.albums = json.items
@@ -85,9 +76,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.container {
-  color: white;
-}
-</style>
