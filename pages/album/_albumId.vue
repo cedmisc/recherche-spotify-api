@@ -1,6 +1,17 @@
 <template>
   <div>
-    <h1>{{ albumName }}</h1>
+    <h1>
+      {{ name }} <br />
+      {{ albumName }}
+    </h1>
+    <nuxt-link
+      :to="{
+        name: 'artist-id',
+        params: { albumName, albumId, name, id, token },
+      }"
+    >
+      <button>Retour à la liste des albums</button>
+    </nuxt-link>
     <table>
       <tr>
         <th>Numéro de piste</th>
@@ -28,8 +39,9 @@ export default {
       // paramètres de recherche pour les fetch
       albumName: this.$route.params.albumName, // ID de l'album sélectionné
       albumId: this.$route.params.albumId, // Nom de cet album
-      token:
-        'BQA0a4tn6UuuWYSlyVkgSFjpHUfcgTsn4L_N4_tMqE1X4rhmFX20fFIXH3nZHyfJkozuvo1UEUNVky7Es2I', // token d'accès à la BDD Spotify
+      token: this.$route.params.token, // token d'accès à la BDD Spotify
+      name: this.$route.params.name,
+      id: this.$route.params.id,
       track: {},
       trackList: [],
       orderedTracks: [],

@@ -18,7 +18,7 @@
       <nuxt-link
         :to="{
           name: 'artist-id',
-          params: { id: artist.id, name: artist.name },
+          params: { id: artist.id, name: artist.name, token },
         }"
       >
         <img v-if="artist.images[0]" :src="artist.images[0].url" />
@@ -26,7 +26,6 @@
         <span>{{ artist.name }}</span>
       </nuxt-link>
     </div>
-    <h2>{{ token }}</h2>
   </div>
 </template>
 
@@ -36,10 +35,16 @@ const fetch = require('node-fetch')
 export default {
   data() {
     return {
-      searchStr: null, // caractères tapés dans la zone de recherche
+      searchStr: this.$route.params.name, // caractères tapés dans la zone de recherche
       artists: [], // résultat de la recherche d'artistes
       token:
-        'BQA0a4tn6UuuWYSlyVkgSFjpHUfcgTsn4L_N4_tMqE1X4rhmFX20fFIXH3nZHyfJkozuvo1UEUNVky7Es2I', // token d'autorisation récupéré via app.js
+        'BQCTC3j8tv4BRTPtxVTVJYklCgFtcQeJAgvdo7htKJZP-j3-OR4BkOQEGPuAY28wyuwT1MsJMTUsQvfbFPc', // token d'autorisation récupéré via app.js
+    }
+  },
+
+  mounted() {
+    if (this.searchStr) {
+      this.search()
     }
   },
 

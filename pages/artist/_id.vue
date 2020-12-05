@@ -2,6 +2,9 @@
   <div class="container">
     <h1 id="artist_name">{{ name }}</h1>
     <p class="lead">Sélectionnez un album pour voir la liste de ses titres:</p>
+    <nuxt-link :to="{ name: 'index', params: { name } }">
+      <button>Retour à la recherche</button>
+    </nuxt-link>
     <div v-for="album in albums" id="block" :key="album.name + album.id">
       <nuxt-link
         :to="{
@@ -9,6 +12,9 @@
           params: {
             albumId: album.id,
             albumName: album.name,
+            id,
+            name,
+            token,
           },
         }"
       >
@@ -27,8 +33,7 @@ export default {
     return {
       id: this.$route.params.id, // id de l'artiste
       name: this.$route.params.name, // nom de l'artiste
-      token:
-        'BQA0a4tn6UuuWYSlyVkgSFjpHUfcgTsn4L_N4_tMqE1X4rhmFX20fFIXH3nZHyfJkozuvo1UEUNVky7Es2I', // token d'accès à la BDD Spotify
+      token: this.$route.params.token, // token d'accès à la BDD Spotify
       albums: [],
       errorMessage: null,
     }
@@ -52,14 +57,17 @@ export default {
     // méthode de récupération des albums de l'artiste sélectionné
     async albumsList() {
       if (this.id) {
-        await fetch(`https://api.spotify.com/v1/artists/${this.id}/albums`, {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + this.token,
-          },
-        })
+        await fetch(
+          `https://api.spotify.com/v1/artists/${this.id}/albums?country=FR&limit=50`,
+          {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + this.token,
+            },
+          }
+        )
           .then((response) => {
             response.json().then((json) => {
               this.albums = json.items
