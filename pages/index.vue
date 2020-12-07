@@ -14,7 +14,7 @@
         @keyup="search()"
       />
     </div>
-    <div v-for="artist in artists" id="block" :key="artist.id">
+    <div v-for="artist in artists" id="block" :key="artist.id + artist.name">
       <nuxt-link
         :to="{
           name: 'artist-id',
@@ -23,7 +23,7 @@
       >
         <img v-if="artist.images[0]" :src="artist.images[0].url" />
         <br />
-        <span>{{ artist.name }}</span>
+        <span v-if="artist">{{ artist.name }}</span>
       </nuxt-link>
     </div>
   </div>
@@ -35,10 +35,13 @@ const fetch = require('node-fetch')
 export default {
   data() {
     return {
-      searchStr: this.$route.params.name, // caractères tapés dans la zone de recherche
-      artists: [], // résultat de la recherche d'artistes
+      // caractères tapés dans la zone de recherche
+      searchStr: this.$route.params.name,
+      // résultat de la recherche d'artistes
+      artists: [],
+      // token d'autorisation à récupérer via app.js
       token:
-        'BQCTC3j8tv4BRTPtxVTVJYklCgFtcQeJAgvdo7htKJZP-j3-OR4BkOQEGPuAY28wyuwT1MsJMTUsQvfbFPc', // token d'autorisation récupéré via app.js
+        'BQCdZlJD3OXCzNGRtXClZqMOFXV3PDpWCtfPimGufioN37KM2R37KdLdLJVReI7p-zsWviSFiRyARM3bMIk', // token d'autorisation récupéré via app.js
     }
   },
 
@@ -49,7 +52,7 @@ export default {
   },
 
   methods: {
-    // Pour chercher un nom d'artiste en se connectant via l'API, token temporaire mis en dur mais à récupérer via app.js
+    // Pour chercher un nom d'artiste en se connectant via l'API
     async search() {
       if (this.searchStr) {
         await fetch(
@@ -71,8 +74,6 @@ export default {
           .catch((error) =>
             console.log('Erreur du fetch de recherche d artiste: ' + error)
           )
-      } else {
-        console.log("Pas de nom d'artiste dans l'espace de recherche")
       }
     },
   },

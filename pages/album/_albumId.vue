@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>
-      {{ name }} <br />
+      {{ name }} {{ id }} <br />
       {{ albumName }}
     </h1>
     <nuxt-link
@@ -18,12 +18,12 @@
         <th>Titres</th>
         <th>Popularité</th>
       </tr>
-      <tr v-for="tracks in orderedTracks" :key="tracks.id">
+      <tr v-for="tracks in orderedTracks" :key="tracks.name + tracks.id">
         <td>{{ tracks.track_number }}</td>
         <td>{{ tracks.name }}</td>
         <td>{{ tracks.popularity }}</td>
       </tr>
-      <tr v-for="track in trackList" :key="track.id">
+      <tr v-for="track in trackList" :key="track.name + track.id">
         <td>{{ track.track_number }}</td>
         <td>{{ track.name }}</td>
         <td>{{ track.popularity }}</td>
@@ -36,19 +36,24 @@
 export default {
   data() {
     return {
-      // paramètres de recherche pour les fetch
-      albumName: this.$route.params.albumName, // ID de l'album sélectionné
-      albumId: this.$route.params.albumId, // Nom de cet album
-      token: this.$route.params.token, // token d'accès à la BDD Spotify
+      // ID de l'album sélectionné
+      albumName: this.$route.params.albumName,
+      // Nom de cet album
+      albumId: this.$route.params.albumId,
+      // token d'accès à la BDD Spotify
+      token: this.$route.params.token,
+      // nom de l'artiste
       name: this.$route.params.name,
+      // id de l'artiste
       id: this.$route.params.id,
-      track: {},
+      // liste des pistes de l'album
       trackList: [],
+      // liste des pistes de l'album classées par popularité
       orderedTracks: [],
     }
   },
 
-  mounted() {
+  created() {
     this.tracksList(this.albumId)
   },
 
@@ -65,10 +70,11 @@ export default {
       })
         .then((response) => {
           response.json().then((json) => {
-            console.log('trackList json ' + json.items)
             this.trackList = json.items
-            this.improveList(this.trackList)
             console.log('trackList ' + this.trackList[0].id)
+            this.improveList(this.trackList)
+              .then((ok) => this.orderList(ok))
+              .then((test) => console.log(test))
           })
         })
         .catch((error) =>
@@ -77,16 +83,13 @@ export default {
     },
 
     async improveList(list) {
-      for await (const element of list) {
-        await this.sortTrack(element.id)
-        console.log('track : ' + this.track.name)
-        console.log('OrderedTracks : ' + this.orderedTracks)
+      for await (const item of list) {
+        console.log('element id : ' + item.id)
+        await this.sortTrack(item.id)
       }
-      console.log('OrderedTracks fin : ' + this.orderedTracks)
-      await this.orderList(this.orderedTracks)
-      await console.log('arranged ' + this.orderedTracks)
+      // await this.orderList(this.orderedTracks)
+      return this.orderedTracks
     },
-
     // méthode de récupération d'une chanson
     async sortTrack(trackId) {
       await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
@@ -100,8 +103,8 @@ export default {
         .then((response) => {
           response.json().then((json) => {
             console.log('track json ' + json)
-            this.track = json
-            this.orderedTracks.push(this.track)
+            this.orderedTracks.push(json)
+            console.log('orderedTracks json ' + json)
           })
         })
         .catch((error) =>
@@ -112,7 +115,7 @@ export default {
     // méthode de tri des chanson selon leur popularité
     orderList(list) {
       list.sort(function (a, b) {
-        return b.popularity - a.popularity
+        return b.popularity > a.popularity
       })
     },
   },

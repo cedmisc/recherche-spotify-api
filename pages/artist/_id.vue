@@ -20,10 +20,9 @@
       >
         <img v-if="album.images[0]" :src="album.images[0].url" />
         <span>{{ album.name }}</span>
-        <span>{{ album.id }}</span>
       </nuxt-link>
     </div>
-    <p>{{ errorMessage }} {{ token }}</p>
+    <p>{{ errorMessage }}</p>
   </div>
 </template>
 
@@ -31,16 +30,20 @@
 export default {
   data() {
     return {
-      id: this.$route.params.id, // id de l'artiste
-      name: this.$route.params.name, // nom de l'artiste
-      token: this.$route.params.token, // token d'accès à la BDD Spotify
+      // id de l'artiste
+      id: this.$route.params.id,
+      // nom de l'artiste
+      name: this.$route.params.name,
+      // token d'accès à la BDD Spotify
+      token: this.$route.params.token,
+      // liste des albums de l'artiste
       albums: [],
+      // message d'erreur
       errorMessage: null,
     }
   },
 
   computed: {
-    // récupération de l'ID de l'artiste sélectionné
     relatedId() {
       return this.artists.find((artist) => artist.id === this.id)
     },
@@ -78,7 +81,6 @@ export default {
           )
       } else {
         this.errorMessage = 'Aucun album trouvé pour cet artiste'
-        console.log('Aucun album trouvé pour cet artiste')
       }
     },
   },
