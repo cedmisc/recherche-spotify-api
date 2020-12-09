@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>
-      {{ name }} {{ id }} <br />
+      {{ name }} : <br />
       {{ albumName }}
     </h1>
     <nuxt-link
@@ -23,11 +23,6 @@
         <td>{{ tracks.name }}</td>
         <td>{{ tracks.popularity }}</td>
       </tr>
-      <tr v-for="track in trackList" :key="track.name + track.id">
-        <td>{{ track.track_number }}</td>
-        <td>{{ track.name }}</td>
-        <td>{{ track.popularity }}</td>
-      </tr>
     </table>
   </div>
 </template>
@@ -46,8 +41,6 @@ export default {
       name: this.$route.params.name,
       // id de l'artiste
       id: this.$route.params.id,
-      // liste des pistes de l'album
-      trackList: [],
       // liste des pistes de l'album classées par popularité
       orderedTracks: [],
     }
@@ -68,14 +61,25 @@ export default {
           Authorization: 'Bearer ' + this.token,
         },
       })
+        .catch((error) =>
+          console.log(
+            'tracksList: Erreur du fetch de la récupération des titres: ' +
+              error
+          )
+        )
         .then((response) => {
-          response.json().then((json) => {
-            this.trackList = json.items
-            console.log('trackList ' + this.trackList[0].id)
-            this.improveList(this.trackList)
-              .then((ok) => this.orderList(ok))
-              .then((test) => console.log(test))
-          })
+          response
+            .json()
+            .catch((error) =>
+              console.log(
+                'tracksList: Erreur dans la réponse du fetch: ' + error
+              )
+            )
+            .then((json) => {
+              this.improveList(json.items)
+                .then((ok) => this.orderList(ok))
+                .then((test) => console.log('test' + test))
+            })
         })
         .catch((error) =>
           console.log('Erreur du fetch de la récupération des titres: ' + error)
@@ -100,6 +104,11 @@ export default {
           Authorization: 'Bearer ' + this.token,
         },
       })
+        .catch((error) =>
+          console.log(
+            'sortTrack: Erreur du fetch de la récupération d un titre: ' + error
+          )
+        )
         .then((response) => {
           response.json().then((json) => {
             console.log('track json ' + json)
@@ -108,14 +117,14 @@ export default {
           })
         })
         .catch((error) =>
-          console.log('Erreur du fetch de la récupération d un titre: ' + error)
+          console.log('sortTrack: Erreur dans la réponse du fetch: ' + error)
         )
     },
 
     // méthode de tri des chanson selon leur popularité
     orderList(list) {
       list.sort(function (a, b) {
-        return b.popularity > a.popularity
+        return b.popularity - a.popularity
       })
     },
   },
@@ -126,5 +135,8 @@ export default {
 table {
   margin-left: auto;
   margin-right: auto;
+}
+button {
+  margin-bottom: 3%;
 }
 </style>

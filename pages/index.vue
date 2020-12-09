@@ -41,7 +41,7 @@ export default {
       artists: [],
       // token d'autorisation à récupérer via app.js
       token:
-        'BQCdZlJD3OXCzNGRtXClZqMOFXV3PDpWCtfPimGufioN37KM2R37KdLdLJVReI7p-zsWviSFiRyARM3bMIk', // token d'autorisation récupéré via app.js
+        'BQAfZ6wB1NxQP0W3NbmwdMgzIigKdHTS5keoqjpCU4t61mV5Bcxb4-yRSe4o6ubhZpS3iKyeDV7GFSWgQ3Q', // token d'autorisation récupéré via app.js
     }
   },
 
@@ -66,13 +66,25 @@ export default {
             },
           }
         )
+          .catch((error) =>
+            console.log(
+              'search: Erreur du fetch de recherche d artiste: ' + error
+            )
+          )
           .then((response) => {
-            response.json().then((json) => {
-              this.artists = json.artists.items
-            })
+            response
+              .json()
+              .catch((error) =>
+                console.log('search: Erreur dans la réponse du fetch: ' + error)
+              )
+              .then((json) => {
+                this.artists = json.artists.items
+              })
           })
           .catch((error) =>
-            console.log('Erreur du fetch de recherche d artiste: ' + error)
+            console.log(
+              'search: Erreur dans le retour de la liste des artistes: ' + error
+            )
           )
       }
     },

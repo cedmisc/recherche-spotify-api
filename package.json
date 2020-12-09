@@ -44,6 +44,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.3.0",
     "jest": "^26.5.0",
+    "jest-fetch-mock": "^3.0.3",
     "lint-staged": "^10.4.0",
     "prettier": "^2.1.2",
     "request": "^2.88.2",
@@ -51,5 +52,10 @@
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-standard": "^20.0.0",
     "vue-jest": "^3.0.4"
+  },
+  "jest": {
+    "automock": false,
+    "setupFiles": ["./setupJest.js"]
   }
 }
+

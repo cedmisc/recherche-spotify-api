@@ -43,15 +43,6 @@ export default {
     }
   },
 
-  computed: {
-    relatedId() {
-      return this.artists.find((artist) => artist.id === this.id)
-    },
-    relatedName() {
-      return this.artists.find((artist) => artist.name === this.name)
-    },
-  },
-
   mounted() {
     this.albumsList()
   },
@@ -71,13 +62,18 @@ export default {
             },
           }
         )
+          .catch((error) =>
+            console.log(
+              'albumList: Erreur du fetch de la récupération d albums: ' + error
+            )
+          )
           .then((response) => {
             response.json().then((json) => {
               this.albums = json.items
             })
           })
           .catch((error) =>
-            console.log('Erreur du fetch de la récupération d albums: ' + error)
+            console.log('albumList: Erreur dans la réponse du fetch: ' + error)
           )
       } else {
         this.errorMessage = 'Aucun album trouvé pour cet artiste'
